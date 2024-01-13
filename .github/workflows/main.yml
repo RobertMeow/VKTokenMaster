@@ -118,5 +118,5 @@ jobs:
         with:
           artifacts: "android-apk/app-release.apk,windows-build/*.exe,ios-build/*.app,linux-build/*.bundle,macos-build/*.app"
           tag: ${{ github.ref_name }}
-          name: Release ${{ steps.get_version.outputs.version }}
+          name: ${{ steps.get_version.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
