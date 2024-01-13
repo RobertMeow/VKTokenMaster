@@ -109,10 +109,14 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get Version from pubspec.yaml
+        id: get_version
+        run: echo "::set-output name=version::$(grep 'version:' pubspec.yaml | awk '{print $2}')"
+
       - name: Create Release and Upload Artifacts
         uses: ncipollo/release-action@v1.13.0
         with:
           artifacts: "android-apk/app-release.apk,windows-build/*.exe,ios-build/*.app,linux-build/*.bundle,macos-build/*.app"
-          tag: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
