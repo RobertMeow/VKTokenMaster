@@ -30,7 +30,7 @@ jobs:
         run: flutter build apk
 
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -46,7 +46,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
       - name: Upload iOS build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ios-build
           path: build/ios/iphoneos/*.app
@@ -61,7 +61,7 @@ jobs:
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
       - name: Upload Windows build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: build/windows/x64/runner/Release/*.exe
@@ -79,7 +79,7 @@ jobs:
       - run: flutter config --enable-linux-desktop
       - run: flutter build linux
       - name: Upload Linux build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: linux-build
           path: build/linux/x64/release/bundle/*
@@ -95,7 +95,7 @@ jobs:
       - run: flutter config --enable-macos-desktop
       - run: flutter build macos
       - name: Upload MacOS build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: macos-build
           path: build/macos/Build/Products/Release/*.app
@@ -109,42 +109,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-
-      - name: Download APK
-        uses: actions/download-artifact@v2
-        with:
-          name: android-apk
-
-      - name: Download iOS build
-        uses: actions/download-artifact@v2
-        with:
-          name: ios-build
-
-      - name: Download Windows build
-        uses: actions/download-artifact@v2
-        with:
-          name: windows-build
-
-      - name: Download Linux build
-        uses: actions/download-artifact@v2
-        with:
-          name: linux-build
-
-      - name: Download MacOS build
-        uses: actions/download-artifact@v2
-        with:
-          name: macos-build
-
-      - name: Upload APK to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./android-apk/app-release.apk
-          asset_name: app-release.apk
-          asset_content_type: application/vnd.android.package-archive
