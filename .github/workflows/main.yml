@@ -49,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-build
-          path: build/ios/iphoneos/*.ipa
+          path: build/ios/iphoneos/*.app
 
   build-windows:
     runs-on: windows-latest
@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: windows-build
-          path: build/windows/runner/Release/*.exe
+          path: build/windows/x64/runner/Release/*.exe
 
   build-linux:
     runs-on: ubuntu-latest
