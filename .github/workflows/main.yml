@@ -101,15 +101,19 @@ jobs:
           path: build/macos/Build/Products/Release/*.app
 
   create-release:
-    needs: [build-android, build-ios, build-windows, build-linux, build-macos]
+    needs: [ build-android, build-ios, build-windows, build-linux, build-macos ]
     runs-on: ubuntu-latest
     steps:
-      - name: Create Release Tag
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          path: artifacts
+
+      - name: Create Release and Upload Artifacts
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          artifacts: "artifacts/android-apk/app-release.apk,artifacts/windows-build/*.exe,artifacts/ios-build/*.app,artifacts/linux-build/*.bundle,artifacts/macos-build/*.app"
+          tag: ${{ github.ref_name }}
           release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
