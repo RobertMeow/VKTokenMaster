@@ -116,4 +116,3 @@ jobs:
           tag: ${{ github.ref_name }}
           release_name: Release ${{ github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
