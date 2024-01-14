@@ -1,18 +1,19 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:dio/dio.dart';
 
 import 'package:token_master/core/api/abstract_api.dart';
 import 'model.dart';
 
 class Api extends AbstractApi {
-  final http.Client client = http.Client();
+  final Dio dio = Dio();
 
   @override
   Future<String> login(String username, String password, String? code, TypeAuth typeAuth) async {
     var userAgent = typeAuth == TypeAuth.Me ? UserAgent.Me : typeAuth == TypeAuth.iPhone ? UserAgent.iPhone : UserAgent.Android;
-    var headers = {'User-Agent': userAgent.toString()};
+    var headers = {
+      'User-Agent': userAgent.toString(),
+    };
 
-    var uri = Uri.https('oauth.vk.com', '/token', {
+    var params = {
       "grant_type": "password",
       "client_id": typeAuth == TypeAuth.Me ? "6146827" : typeAuth == TypeAuth.iPhone ? "3140623" : "2274003",
       "client_secret": typeAuth == TypeAuth.Me ? "qVxWRF1CwHERuIrKBnqe" : typeAuth == TypeAuth.iPhone ? "VeWdmVclDCtn6ihuP1nt" : "hHbZxrka2uZ6jB1inYsH",
@@ -22,10 +23,19 @@ class Api extends AbstractApi {
       "2fa_supported": "1",
       "force_sms": "1",
       "${code == '' ? 'c' : ''}code": code,
-    });
-    var response = await client.get(uri, headers: headers);
-    var data = json.decode(response.body);
+    };
 
+    final response = await dio.get(
+      'https://oauth.vk.com/token',
+      queryParameters: params,
+      options: Options(
+        validateStatus: (_) => true,
+        contentType: Headers.jsonContentType,
+        responseType:ResponseType.json,
+        headers: headers,
+      ),
+    );
+    final data = response.data;
     if (data.containsKey("validation_sid")) {
       await validatePhone(data['validation_sid']);
       return 'code';
@@ -42,10 +52,12 @@ class Api extends AbstractApi {
 
   @override
   Future<void> validatePhone(String validationSid) async {
-    var uri = Uri.https('api.vk.com', '/method/auth.validatePhone', {
-      "sid": validationSid,
-      "v": "5.207",
-    });
-    await client.get(uri);
+    await dio.get(
+      'https://api.vk.com/method/auth.validatePhone',
+      queryParameters: {
+        "sid": validationSid,
+        "v": "5.207",
+      },
+    );
   }
 }
