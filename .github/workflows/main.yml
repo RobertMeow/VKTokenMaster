@@ -111,9 +111,6 @@ jobs:
     needs: [ build-android, build-ios, build-windows, build-linux, build-macos ]
     runs-on: ubuntu-latest
     steps:
-      - name: Debug tag name
-        run:
-          echo "Tag name: v${{ env.version }}.${{ github.run_number }}"
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -122,6 +119,9 @@ jobs:
       - name: Get Version from pubspec.yaml
         id: get_version
         run: echo "version=$(grep 'version:' pubspec.yaml | awk '{print $2}' | awk -F'+' '{print $1}')" >> $GITHUB_ENV
+
+      - name: Debug tag name
+        run: echo "Tag name - v${{ env.version }}.${{ github.run_number }}"
 
       - name: Create Release and Upload Artifacts
         uses: ncipollo/release-action@v1.13.0
