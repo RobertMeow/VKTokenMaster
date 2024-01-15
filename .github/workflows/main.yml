@@ -111,6 +111,9 @@ jobs:
     needs: [ build-android, build-ios, build-windows, build-linux, build-macos ]
     runs-on: ubuntu-latest
     steps:
+      - name: Debug tag name
+        run:
+          echo "Tag name: v${{ env.version }}.${{ github.run_number }}"
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -127,4 +130,4 @@ jobs:
           name: ${{ env.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: main
-          tag: v{{ env.version }}.${{ github.run_number }}
+          tag: v${{ env.version }}.${{ github.run_number }}
