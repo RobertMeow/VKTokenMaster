@@ -111,21 +111,22 @@ jobs:
     needs: [ build-android, build-ios, build-windows, build-linux, build-macos ]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             pubspec.yaml
           sparse-checkout-cone-mode: false
+
       - name: Get version
         id: yq
         uses: mikefarah/yq@master
         with:
           cmd: yq -r '.version' 'pubspec.yaml'
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release and Upload Artifacts
         uses: ncipollo/release-action@v1.13.0
