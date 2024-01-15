@@ -116,6 +116,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: actions/checkout@v3
       - name: Get version
         id: yq
         uses: mikefarah/yq@master
