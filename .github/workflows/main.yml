@@ -116,18 +116,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get Version from pubspec.yaml
-        id: get_version
-        run: echo "version=$(grep 'version:' pubspec.yaml | awk '{print $2}' | awk -F'+' '{print $1}')" >> $GITHUB_ENV
-
-      - name: Debug tag name
-        run: echo "Tag name - v${{ env.version }}.${{ github.run_number }}"
+      - name: Get version
+        id: yq
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -r '.version' 'pubspec.yaml'
 
       - name: Create Release and Upload Artifacts
         uses: ncipollo/release-action@v1.13.0
         with:
           artifacts: "android-apk/app-release.apk,windows-build/windows-build.zip,ios-build/*.ipa,linux-build/linux-build.zip,macos-build/*.dmg"
-          name: ${{ env.version }}
+          name: Release v${{ steps.yq.outputs.result }}
           token: ${{ secrets.GITHUB_TOKEN }}
           commit: main
-          tag: v${{ env.version }}.${{ github.run_number }}
+          tag: v${{ steps.yq.outputs.result }}.${{ github.run_number }}
