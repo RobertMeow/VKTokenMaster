@@ -27,7 +27,7 @@ jobs:
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk
+        run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -59,7 +59,12 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter config --enable-windows-desktop
-      - run: flutter build windows
+      - run: flutter build windows --release
+      - name: Copy DLL files
+        run: |
+          Copy-Item windows/dll/msvcp140.dll build/windows/x64/runner/Release/
+          Copy-Item windows/dll/vcruntime140.dll build/windows/x64/runner/Release/
+          Copy-Item windows/dll/vcruntime140_1.dll build/windows/x64/runner/Release/
       - name: Zip Windows build
         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath windows-build.zip
       - name: Upload Windows build
