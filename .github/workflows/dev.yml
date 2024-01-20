@@ -1,12 +1,12 @@
-name: Flutter Multi-Platform Build and Release
+name: Flutter Multi-Platform Build and PreRelease
 
 on:
   push:
     branches:
-      - main
+      - dev
   pull_request:
     branches:
-      - main
+      - dev
 
 jobs:
   build-android:
@@ -115,7 +115,7 @@ jobs:
           name: macos-build
           path: build/macos/Build/Products/Release/
 
-  create-release:
+  create-prerelease:
     needs: [ build-android, build-ios, build-windows, build-linux, build-macos ]
     runs-on: ubuntu-latest
     steps:
@@ -141,6 +141,7 @@ jobs:
         with:
           artifacts: "android-apk/app-release.apk,windows-build/windows-build.zip,ios-build/*.ipa,linux-build/linux-build.zip,macos-build/*.dmg"
           name: Release v${{ steps.yq.outputs.result }}
+          prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit: main
+          commit: dev
           tag: v${{ steps.yq.outputs.result }}.${{ github.run_number }}
