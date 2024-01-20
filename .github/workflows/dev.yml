@@ -65,9 +65,9 @@ jobs:
       - run: flutter build windows --release
       - name: Copy DLL files
         run: |
-          Copy-Item windows/dll/x64/msvcp140.dll build/windows/x64/runner/Release/
-          Copy-Item windows/dll/x64/vcruntime140.dll build/windows/x64/runner/Release/
-          Copy-Item windows/dll/x64/vcruntime140_1.dll build/windows/x64/runner/Release/
+          Copy-Item windows/dll/msvcp140.dll build/windows/x64/runner/Release/
+          Copy-Item windows/dll/vcruntime140.dll build/windows/x64/runner/Release/
+          Copy-Item windows/dll/vcruntime140_1.dll build/windows/x64/runner/Release/
       - name: Zip Windows build
         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath windows-build.zip
       - name: Upload Windows build
