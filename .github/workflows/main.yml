@@ -1,9 +1,6 @@
 name: Flutter Multi-Platform Build and Release
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
